@@ -15,7 +15,7 @@ namespace DigitalBank
       }
       private static ulong _accountNumberSeed = 1000000000000000;
       private decimal _balance;
-      public List<Transaction> _transactions;
+      private List<Transaction> _transactions;
 
       public Account(string owner, decimal initialBalance)
       {
