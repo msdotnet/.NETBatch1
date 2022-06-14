@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace TemperatureConverter
 {
@@ -6,75 +7,38 @@ namespace TemperatureConverter
    {
       static void Main(string[] args)
       {
-         var instanceClass = new Child();
-         var name = instanceClass.ReturnName("Chulbul");
-         Console.WriteLine($"Name: {name}");
-         var age = 28;
-         var increment = 5;
-
-         Console.WriteLine($"Age: {Child.ReturnAge(age: ref age, increment:increment)}");
-         Console.WriteLine($"Age: {age}");
-
-         Console.WriteLine($"Parent Name: {instanceClass.ReturnParentName("Big Boss")}");
-
-         Console.WriteLine($"Family Tree: {instanceClass.ReturnFamilyTree("Father", "Gandfather")}");
-
-         var family = new Family { Age = 29, Name = "Chulbul Family" };
-         Console.WriteLine($"Passed Name: {family.Name}");
-
-         var familyReturned = instanceClass.ReturnAgeAndName(family);
-         Console.WriteLine($"Name: {familyReturned.Name}, Age: {familyReturned.Age}");
-
-         var familyReturnedAsTupple = instanceClass.ReturnAgeAndNameWithTupple(family);
-         Console.WriteLine($"Name: {familyReturnedAsTupple.Name}, Age: {familyReturnedAsTupple.Age}");
-         
-         Console.WriteLine($"Passed Name: {family.Name}");
+         Family family = new Family();
+         Family.Count = 10;
+         Family family1 = new Family();
+         Family family2 = new Family();
+         Family family3 = new Family();
+         Family family4 = new Family();
+         Console.WriteLine($"Total Instance: {Family.Count} {family3.Count1}");
       }
    }
-   class Child : Parent
-   {
-      internal string ReturnName(string name)
-      {
-         return $"{name} Pandey";
-      }
-      internal static int ReturnAge(ref int age, int ageHike = 1, int increment = 0)
-      {
-         age = age + increment + ageHike;
-         return age;
-      }
-      internal override string ReturnParentName(string name)
-      {
-         return $"{name} Overridden Pandey";
-      }
-      internal Family ReturnAgeAndName(Family family)
-      {
-         family.Name = $"{family.Name} Pandey";
-         return family;
-      }
 
-      internal (string Name, int Age) ReturnAgeAndNameWithTupple(Family family)
-      {
-         family.Name = $"{family.Name} Pandey";
-         family.Age = 30;
-         return (family.Name, family.Age);
-      }
-
-      internal string ReturnFamilyTree(params string[] name)
-      {
-         return $"{name[0]}, {name[1]} Pandey";
-      }
-   }
-   class Parent
-   {
-      internal virtual string ReturnParentName(string name)
-      {
-         return $"{name} Pandey";
-      }
-
-   }
    class Family
    {
-      public int Age; // Field
-      public string Name { get; set; } // Prop
+      public static int Count = 0;
+      public int Count1 = 0;
+      public Family()
+      {
+         Count++;
+         Count1++;
+      }
+      public string FirstName { get; set; }
+      public string LastName { get; set; }
+      public int Age { get; set; }
+      //public static string GetName() => "Chulbul" + GetFullName();
+      //public string GetFullName() => $"{GetName()} Pandey";
+      public async Task<string> GetNameAsync()
+      {
+         if(false)
+         {
+            ;
+         }
+         await Task.Delay(3000);
+         return "Chulbul";
+      }
    }
 }
