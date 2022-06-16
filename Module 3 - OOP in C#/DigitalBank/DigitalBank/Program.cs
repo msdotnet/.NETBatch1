@@ -3,26 +3,25 @@ using DigitalBank;
 
 Console.WriteLine("\n\tWelcome to QualMinds Digital Bank\n\n");
 
-var account = new Account("Avishek Kumar", 500);
+IAccount account = new Account("Avishek Kumar", new Amount {Value = 500, Currency = "INR" });
 Console.WriteLine($"Account created for {account.Owner} with a initial balance of {account.Balance}");
 
-account.Withdraw(200, DateTime.Now, "Paying Rent.");
+account.Withdraw(new Amount { Value = 200, Currency = "INR" }, DateTime.Now, "Paying Rent.");
 Console.WriteLine(account.Balance);
 
-account.Deposite(300, DateTime.Now, "Salary Received.");
+account.Deposite(new Amount { Value = 300, Currency = "INR" }, DateTime.Now, "Salary Received.");
 Console.WriteLine(account.Balance);
 
-account.Withdraw(150, DateTime.Now, "Paid for mobile bill.");
+account.Withdraw(new Amount { Value = 250, Currency = "INR" }, DateTime.Now, "Paid for mobile bill.");
 Console.WriteLine(account.Balance);
 
-Console.WriteLine($"\n{account.GetTransactionHistory()}");
-
+Console.WriteLine($"\n{Transaction.GetTransactionHistory(account.Transactions)}");
 
 #region Testing Invalid Operations
 
 try
 {
-   account.Deposite(0, DateTime.Now, "Salary Received.");
+   account.Deposite(new Amount { Value = 0, Currency = "INR" }, DateTime.Now, "Salary Received.");
 }
 catch (ArgumentOutOfRangeException ex)
 {
@@ -31,7 +30,7 @@ catch (ArgumentOutOfRangeException ex)
 
 try
 {
-   account.Withdraw(10000, DateTime.Now, "Salary Received.");
+   account.Withdraw(new Amount { Value = 1500, Currency = "INR" }, DateTime.Now, "Salary Received.");
 }
 catch (InvalidOperationException ex)
 {
@@ -41,7 +40,7 @@ catch (InvalidOperationException ex)
 
 try
 {
-   var invalidAccount = new Account("Avishek Kumar", -500);
+   var invalidAccount = new Account("Avishek Kumar", new Amount { Value = -500, Currency = "INR" });
 }
 catch(ArgumentOutOfRangeException ex)
 {

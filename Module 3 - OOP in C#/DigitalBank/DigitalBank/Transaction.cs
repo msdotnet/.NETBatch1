@@ -8,14 +8,27 @@ namespace DigitalBank
 {
    public class Transaction
    {
-      public decimal Amount { get; set; }
+      public Amount Amount;
       public DateTime Date { get; set; }
-      public string Note { get; set; }
-      public Transaction(decimal amount, DateTime date, string note)
+      public string? Note { get; set; }
+
+      public Transaction(Amount amount, DateTime date, string note)
       {
          Amount = amount;
          Date = date;
          Note = note;
+      }
+      public static string GetTransactionHistory(List<Transaction> transactions)
+      {
+         decimal balance = 0;
+         var transactionHistory = new StringBuilder();
+         transactionHistory.AppendLine("Date\t\tAmount\tBalance\tNote");
+         foreach (var transaction in transactions)
+         {
+            balance += transaction.Amount.Value;
+            transactionHistory.AppendLine($"{transaction.Date.ToShortDateString()}\t{transaction.Amount}\t{balance}\t{transaction.Note}");
+         }
+         return transactionHistory.ToString();
       }
    }
 }

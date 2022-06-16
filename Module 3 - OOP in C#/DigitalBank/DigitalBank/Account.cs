@@ -2,7 +2,7 @@
 
 namespace DigitalBank
 {
-   public class Account
+   public class Account : IAccount
    {
       public ulong Number { get; }
       public string Owner { get; set; }
@@ -15,58 +15,45 @@ namespace DigitalBank
       }
       private static ulong _accountNumberSeed = 1000000000000000;
       private decimal _balance;
-      private List<Transaction> _transactions;
+      public List<Transaction> Transactions { get; internal set; } = new List<Transaction>();
 
-      public Account(string owner, decimal initialBalance)
+      public Account(string owner, Amount initialAmount)
       {
-         if (initialBalance < 500)
+         if (initialAmount.Value < 500)
          {
-            throw new ArgumentOutOfRangeException(nameof(initialBalance), "Min opening balance need to be 500 or more.");
+            throw new ArgumentOutOfRangeException(nameof(initialAmount), "Minimum opening balance need to be 500 or more.");
          }
          this.Owner = owner;
-         _balance = initialBalance;
          Number = _accountNumberSeed;
          _accountNumberSeed++;
-         _transactions = new List<Transaction>(){
-            new Transaction(initialBalance, DateTime.Now, "Opening balance.")
-         };
+         Deposite(initialAmount, DateTime.Now, "Initial amount.");
       }
 
-      public void Deposite(decimal amount, DateTime date, string note)
+      public void Deposite(Amount amount, DateTime date, string note)
       {
-         if (amount <= 0)
+         if (amount.Value <= 0)
          {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Deposite amount need to positive.");
+            throw new ArgumentOutOfRangeException(nameof(amount), "Deposite amount must be positive.");
          }
-         _balance += amount;
-         _transactions.Add(new Transaction(amount, date, note));
+         _balance += amount.Value;
+         Transactions.Add(new Transaction(amount, date, note));
       }
 
-      public void Withdraw(decimal amount, DateTime date, string note)
+      public void Withdraw(Amount amount, DateTime date, string note)
       {
-         if (amount <= 0)
+         if (amount.Value <= 0)
          {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Withdrawal amount need to positive.");
+            throw new ArgumentOutOfRangeException(nameof(amount), "Withdrawal amount must be positive.");
          }
-         if (_balance - amount < 0)
+         if (_balance - amount.Value < 0)
          {
             throw new InvalidOperationException($"Insufficient funds for this withdrawal amount. Available balance is: {Balance}");
          }
-         _balance -= amount;
-         _transactions.Add(new Transaction(-amount, date, note));
+         _balance -= amount.Value;
+         amount.Value = -amount.Value;
+         Transactions.Add(new Transaction(amount, date, note));
       }
 
-      public string GetTransactionHistory()
-      {
-         decimal balance = 0;
-         var transactionHistory = new StringBuilder();
-         transactionHistory.AppendLine("Date\t\tAmount\tBalance\tNote");
-         foreach(var transaction in _transactions )
-         {
-            balance += transaction.Amount;
-            transactionHistory.AppendLine($"{transaction.Date.ToShortDateString()}\t{transaction.Amount}\t{balance}\t{transaction.Note}");
-         }
-         return transactionHistory.ToString();
-      }
+
    }
 }
