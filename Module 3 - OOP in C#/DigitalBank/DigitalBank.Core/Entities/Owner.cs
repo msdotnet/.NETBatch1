@@ -1,4 +1,4 @@
-﻿namespace DigitalBank
+﻿namespace DigitalBank.Core.Entities
 {
    public record struct Owner(string FirstName, string LastName)
    {

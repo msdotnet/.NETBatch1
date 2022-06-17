@@ -1,4 +1,6 @@
-﻿namespace DigitalBank
+﻿using DigitalBank.Core.Entities;
+
+namespace DigitalBank.Core.Contracts
 {
    public interface IAccount
    {

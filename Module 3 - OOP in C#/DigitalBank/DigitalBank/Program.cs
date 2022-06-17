@@ -1,5 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using DigitalBank;
+using DigitalBank.Core;
+using DigitalBank.Core.Contracts;
+using DigitalBank.Core.Entities;
+using DigitalBank.Core.Services;
 
 Console.WriteLine("\n\tWelcome to QualMinds Digital Bank\n\n");
 
@@ -15,8 +18,16 @@ Console.WriteLine(account.Balance);
 account.Withdraw(new Amount { Value = 250, Currency = CurrencyType.INR }, DateTime.Now, null);
 Console.WriteLine(account.Balance);
 
-var transactionHistory = Transaction.GetTransactionHistory(account.Transactions);
+ITransactionService transactionService = new TransactionService();
+var transactionHistory = transactionService.GetTransactionHistory(account.Transactions);
 Console.WriteLine($"\n{transactionHistory.Description}:\n{transactionHistory.TransactionHistory}");
+
+
+var transactionHistoryByCreditType = transactionService.GetTransactionHistoryByType(account.Transactions, TransactionType.Credit);
+Console.WriteLine($"\n{transactionHistoryByCreditType.Description}:\n{transactionHistoryByCreditType.TransactionHistory}");
+
+var transactionHistoryByDebitType = transactionService.GetTransactionHistoryByType(account.Transactions, TransactionType.Debit);
+Console.WriteLine($"\n{transactionHistoryByDebitType.Description}:\n{transactionHistoryByDebitType.TransactionHistory}");
 
 #region Testing Invalid Operations
 

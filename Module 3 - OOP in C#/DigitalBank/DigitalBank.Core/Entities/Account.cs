@@ -1,7 +1,13 @@
-﻿using System.Text;
+﻿using DigitalBank.Core.Contracts;
 
-namespace DigitalBank
+namespace DigitalBank.Core.Entities
 {
+   public enum CurrencyType : int
+   {
+      INR = 1,
+      USD,
+      GBP
+   }
    public class Account : IAccount
    {
       public ulong Number { get; }
@@ -24,7 +30,7 @@ namespace DigitalBank
          {
             throw new ArgumentOutOfRangeException(nameof(initialAmount), "Minimum opening balance need to be 500 or more.");
          }
-         this.Owner = owner;
+         Owner = owner;
          Number = _accountNumberSeed;
          _accountNumberSeed++;
          Deposite(initialAmount, DateTime.Now, "Initial amount.");
@@ -55,7 +61,5 @@ namespace DigitalBank
          amount.Value = -amount.Value;
          Transactions.Add(new Transaction(amount, date, note, TransactionType.Debit));
       }
-
-
    }
 }
