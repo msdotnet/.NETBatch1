@@ -3,6 +3,6 @@
    public struct Amount
    {
       public decimal Value;
-      public string Currency;
+      public CurrencyType Currency;
    }
 }

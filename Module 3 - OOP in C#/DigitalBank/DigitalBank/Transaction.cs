@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace DigitalBank
 {
@@ -11,24 +7,28 @@ namespace DigitalBank
       public Amount Amount;
       public DateTime Date { get; set; }
       public string? Note { get; set; }
-
-      public Transaction(Amount amount, DateTime date, string note)
+      public TransactionType Type { get; set; }
+      public Transaction(Amount amount, DateTime date, string? note, TransactionType type)
       {
          Amount = amount;
          Date = date;
          Note = note;
+         Type = type;
       }
-      public static string GetTransactionHistory(List<Transaction> transactions)
+
+      public static (string Description, string TransactionHistory) GetTransactionHistory(List<Transaction> transactions)
       {
+         var description = $"Transaction history for {DateTime.Now.ToShortDateString()}";
          decimal balance = 0;
          var transactionHistory = new StringBuilder();
-         transactionHistory.AppendLine("Date\t\tAmount\tBalance\tNote");
+         transactionHistory.AppendLine("Date\t\tAmount\tBalance\tType\tNote");
          foreach (var transaction in transactions)
          {
             balance += transaction.Amount.Value;
-            transactionHistory.AppendLine($"{transaction.Date.ToShortDateString()}\t{transaction.Amount}\t{balance}\t{transaction.Note}");
+            var note = transaction.Note?.ToUpper() ?? "No note.";
+            transactionHistory.AppendLine($"{transaction.Date.ToShortDateString()}\t{transaction.Amount.Value}\t{balance}\t{transaction.Type.ToString()}\t{note.ToUpper()}");
          }
-         return transactionHistory.ToString();
+         return (description, transactionHistory.ToString());
       }
    }
 }

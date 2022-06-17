@@ -5,7 +5,8 @@ namespace DigitalBank
    public class Account : IAccount
    {
       public ulong Number { get; }
-      public string Owner { get; set; }
+      public Owner Owner { get; set; }
+      public bool? IsNri { get; set; }
       public decimal Balance
       {
          get
@@ -17,7 +18,7 @@ namespace DigitalBank
       private decimal _balance;
       public List<Transaction> Transactions { get; internal set; } = new List<Transaction>();
 
-      public Account(string owner, Amount initialAmount)
+      public Account(Owner owner, Amount initialAmount, bool? isNri = null)
       {
          if (initialAmount.Value < 500)
          {
@@ -27,19 +28,20 @@ namespace DigitalBank
          Number = _accountNumberSeed;
          _accountNumberSeed++;
          Deposite(initialAmount, DateTime.Now, "Initial amount.");
+         IsNri = isNri;
       }
 
-      public void Deposite(Amount amount, DateTime date, string note)
+      public void Deposite(Amount amount, DateTime date, string? note)
       {
          if (amount.Value <= 0)
          {
             throw new ArgumentOutOfRangeException(nameof(amount), "Deposite amount must be positive.");
          }
          _balance += amount.Value;
-         Transactions.Add(new Transaction(amount, date, note));
+         Transactions.Add(new Transaction(amount, date, note, TransactionType.Credit));
       }
 
-      public void Withdraw(Amount amount, DateTime date, string note)
+      public void Withdraw(Amount amount, DateTime date, string? note)
       {
          if (amount.Value <= 0)
          {
@@ -51,7 +53,7 @@ namespace DigitalBank
          }
          _balance -= amount.Value;
          amount.Value = -amount.Value;
-         Transactions.Add(new Transaction(amount, date, note));
+         Transactions.Add(new Transaction(amount, date, note, TransactionType.Debit));
       }
 
 
