@@ -16,7 +16,7 @@ namespace LoggingPlayground
 
 
          var fruits = new[] { "Apple", "Orange" };
-         Log.Information("My fruite collection is: {Fruits}", fruits);
+         Log.Information("My fruit collection is: {Fruits}", fruits);
 
 
          // Logging Debug, Warning and Exception details
@@ -26,7 +26,7 @@ namespace LoggingPlayground
             Log.Debug($"Dividing {a} by {b}");
             if (b == 0)
             {
-               Log.Warning("You are trying to divid by zereo, it will result into failure.");
+               Log.Warning("You are trying to divide by zereo, it will result into failure.");
             }
             Console.WriteLine(a / b);
          }
