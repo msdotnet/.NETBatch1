@@ -37,7 +37,7 @@ namespace DigitalBank.Core.Entities
          IsNri = isNri;
       }
 
-      public void Deposite(Amount amount, DateTime date, string? note)
+      public bool Deposite(Amount amount, DateTime date, string? note)
       {
          if (amount.Value <= 0)
          {
@@ -45,6 +45,7 @@ namespace DigitalBank.Core.Entities
          }
          _balance += amount.Value;
          Transactions.Add(new Transaction(amount, date, note, TransactionType.Credit));
+         return true;
       }
 
       public void Withdraw(Amount amount, DateTime date, string? note)

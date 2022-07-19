@@ -1,12 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using DigitalBank.Core;
 using DigitalBank.Core.Contracts;
 using DigitalBank.Core.Entities;
 using DigitalBank.Core.Services;
 
 Console.WriteLine("\n\tWelcome to QualMinds Digital Bank\n\n");
 
-IAccount account = new Account(new Owner("Avishek", "Kumar"), new Amount {Value = 500, Currency = CurrencyType.INR });
+IAccount account = new Account(new Owner("Avishek", "Kumar"), new Amount { Value = 500, Currency = CurrencyType.INR });
 Console.WriteLine($"Account created for {account.Owner.FullName} with a initial balance of {account.Balance}");
 
 account.Withdraw(new Amount { Value = 200, Currency = CurrencyType.INR }, DateTime.Now, "Paying Rent.");
@@ -54,7 +53,7 @@ try
 {
    var invalidAccount = new Account(new Owner("Avishek", "Kumar"), new Amount { Value = -500, Currency = CurrencyType.INR });
 }
-catch(ArgumentOutOfRangeException ex)
+catch (ArgumentOutOfRangeException ex)
 {
    Console.WriteLine(ex);
 }
