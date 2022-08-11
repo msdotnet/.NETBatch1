@@ -1,16 +1,43 @@
-﻿using EmployeeRecordBook.Core.Entities;
+﻿using System;
+using System.Collections.Generic;
+using EmployeeRecordBook.Core.Entities;
+using EmployeeRecordBook.Infrastructure.EntityConfigurations;
+using EmployeeRecordBook.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EmployeeRecordBook.Infrastructure.Data
 {
-   public class EmployeeContext : DbContext
+   public partial class EmployeeContext : DbContext
    {
-      public DbSet<Employee> Employees { get; set; }
-      public DbSet<Department> Departments { get; set; }
+      public EmployeeContext()
+      {
+      }
+
+      public EmployeeContext(DbContextOptions<EmployeeContext> options)
+          : base(options)
+      {
+      }
+
+      public virtual DbSet<Department> Departments { get; set; } = null!;
+      public virtual DbSet<Employee> Employees { get; set; } = null!;
 
       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       {
-         optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=EmployeeDb;Trusted_Connection=True;");
+         if (!optionsBuilder.IsConfigured)
+         {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=EmployeeDb");
+         }
       }
+
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+      {
+         modelBuilder.RegisterEntityConfigurations();
+
+         OnModelCreatingPartial(modelBuilder);
+      }
+
+      partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
    }
 }

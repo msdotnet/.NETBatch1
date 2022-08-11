@@ -1,4 +1,5 @@
-﻿using EmployeeRecordBook.Core.Entities;
+﻿using EmployeeRecordBook.Core.Dtos;
+using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Core.Infrastructure.Repositories;
 using EmployeeRecordBook.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,16 +19,22 @@ namespace EmployeeRecordBook.Infrastructure.Repositories
          await _employeeContext.SaveChangesAsync();
          return employee;
       }
-      public async Task<IEnumerable<Employee>> GetEmployeesAsync()
+      public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
       {
+         var employeeQuery = from employee in _employeeContext.Employees.Include(e => e.Department)
+                             select new EmployeeDto
+                             {
+                                Id = employee.Id,
+                                Name = employee.Name,
+                                Salary = employee.Salary,
+                                DepartmentName = employee.Department.Name
+                             };
          //return await _employeeContext.Employees.ToListAsync();
-         var employeeQuery = from employee in _employeeContext.Employees
-                             select employee;
          return await employeeQuery.ToListAsync();  // Executes DB Query in DB and Get results.
       }
       public async Task<Employee> GetEmployeeAsync(int employeeId)
       {
-         return await _employeeContext.Employees.Where(e => e.EmployeeId == employeeId).FirstOrDefaultAsync();
+         return await _employeeContext.Employees.FindAsync(employeeId);
       }
       public async Task<Employee> UpdateAsync(int employeeId, Employee employee)
       {
