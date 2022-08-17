@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeRecordBook.Infrastructure.Repositories
+namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
 {
    public class DepartmentRepository : IDepartmentRepository
    {
