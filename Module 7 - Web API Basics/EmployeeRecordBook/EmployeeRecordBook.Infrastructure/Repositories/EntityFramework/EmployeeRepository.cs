@@ -32,11 +32,8 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
          //return await _employeeContext.Employees.ToListAsync();
          return await employeeQuery.ToListAsync();  // Executes DB Query in DB and Get results.
       }
-      public async Task<Employee> GetEmployeeAsync(int employeeId)
-      {
-         return await _employeeContext.Employees.FindAsync(employeeId);
-      }
-      public async Task<Employee> UpdateAsync(int employeeId, Employee employee)
+      public async Task<Employee> GetEmployeeAsync(int employeeId) => await _employeeContext.Employees.FindAsync(employeeId);
+      public async Task<bool> UpdateAsync(int employeeId, Employee employee)
       {
          var employeeToBeUpdated = await GetEmployeeAsync(employeeId);
          //var employeeToBeUpdated = new Employee { Id = employeeId };
@@ -46,14 +43,15 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
          employeeToBeUpdated.DepartmentId = employee.DepartmentId;
          //_employeeContext.Entry(employeeToBeUpdated).State = EntityState.Modified;
          _employeeContext.Employees.Update(employeeToBeUpdated);
-         _employeeContext.SaveChanges();  // Actual execution of the command happens here with DB.
-         return employeeToBeUpdated;
+         var result = _employeeContext.SaveChanges();  // Actual execution of the command happens here with DB.
+         return result > 0;
       }
-      public async Task DeleteAsync(int employeeId)
+      public async Task<bool> DeleteAsync(int employeeId)
       {
          var employeeToBeDeleted = await GetEmployeeAsync(employeeId);
          _employeeContext.Employees.Remove(employeeToBeDeleted);
-         await _employeeContext.SaveChangesAsync();
+         var result = await _employeeContext.SaveChangesAsync();
+         return result > 0;
       }
    }
 }

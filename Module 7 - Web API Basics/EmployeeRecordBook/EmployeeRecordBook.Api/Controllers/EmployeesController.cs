@@ -1,10 +1,8 @@
-﻿using EmployeeRecordBook.Core.Dtos;
+﻿using AutoMapper;
+using EmployeeRecordBook.Core.Dtos;
 using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Core.Infrastructure.Repositories;
-using EmployeeRecordBook.Infrastructure.Data;
-using EmployeeRecordBook.Infrastructure.Repositories.EntityFramework;
 using EmployeeRecordBook.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeRecordBook.Api.Controllers
@@ -14,44 +12,63 @@ namespace EmployeeRecordBook.Api.Controllers
    public class EmployeesController : ControllerBase
    {
       private readonly IEmployeeRepository _employeeRepository;
-      public EmployeesController()
+      private readonly ILogger<EmployeesController> _logger;
+      private readonly IMapper _mapper;
+
+      public EmployeesController(IEmployeeRepository employeeRepository, ILogger<EmployeesController> logger, IMapper mapper)
       {
-         _employeeRepository = new EmployeeRepository(new EmployeeContext());
+         _employeeRepository = employeeRepository;
+         _logger = logger;
+         _mapper = mapper;
       }
 
- 
+
       [HttpGet]
-      public async Task<IEnumerable<EmployeeDto>> Get()
+      public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
       {
-         return await _employeeRepository.GetEmployeesAsync();
+         _logger.LogInformation("Getting list of all employees");
+         var result = await _employeeRepository.GetEmployeesAsync();
+         if (!result.Any())
+            return NotFound();
+         return Ok(result);
       }
 
       [HttpGet("{id}")]
-      public async Task<Employee> Get(int id)
+      public async Task<ActionResult<IEnumerable<Employee>>> Get(int id, [FromQuery] bool department)
       {
-         return await _employeeRepository.GetEmployeeAsync(id);
+         _logger.LogInformation("Getting list of employee by ID: {id}", id);
+         var result = await _employeeRepository.GetEmployeeAsync(id);
+         if (result is null)
+            return NotFound();
+         return Ok(result);
       }
 
 
       [HttpPost]
-      public async Task<Employee> Post([FromBody] EmployeeVm employeeVm)
+      public async Task<ActionResult<Employee>> Post([FromBody] EmployeeVm employeeVm)
       {
-         var employee = new Employee { Name = employeeVm.Name, Email = employeeVm.Email, Salary = employeeVm.Salary, DepartmentId = employeeVm.DepartmentId };
-         return await _employeeRepository.CreateAsync(employee);
+         var employee = _mapper.Map<Employee>(employeeVm);
+         var result = await _employeeRepository.CreateAsync(employee);
+         return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
       }
 
       [HttpPut("{id}")]
-      public async Task<Employee> Put(int id, [FromBody] EmployeeVm employeeVm)
+      public async Task<ActionResult> Put(int id, [FromBody] EmployeeVm employeeVm)
       {
-         var employee = new Employee {Id = employeeVm.Id??0, Name = employeeVm.Name, Email = employeeVm.Email, Salary = employeeVm.Salary, DepartmentId = employeeVm.DepartmentId };
-         return await _employeeRepository.UpdateAsync(id, employee);
+         if (id <= 0 || id != employeeVm.Id)
+         {
+            return BadRequest();
+         }
+         var employee = _mapper.Map<Employee>(employeeVm);
+         await _employeeRepository.UpdateAsync(id, employee);
+         return NoContent();
       }
 
 
       [HttpDelete("{id}")]
       public async Task Delete(int id)
       {
-        await _employeeRepository.DeleteAsync(id);
+         await _employeeRepository.DeleteAsync(id);
       }
    }
 }
