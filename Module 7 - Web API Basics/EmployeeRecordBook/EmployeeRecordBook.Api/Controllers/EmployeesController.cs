@@ -4,6 +4,7 @@ using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Core.Infrastructure.Repositories;
 using EmployeeRecordBook.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace EmployeeRecordBook.Api.Controllers
 {
@@ -24,6 +25,8 @@ namespace EmployeeRecordBook.Api.Controllers
 
 
       [HttpGet]
+      [ProducesResponseType((int)HttpStatusCode.OK)]
+      [ProducesResponseType((int)HttpStatusCode.NotFound)]
       public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
       {
          _logger.LogInformation("Getting list of all employees");
@@ -34,7 +37,9 @@ namespace EmployeeRecordBook.Api.Controllers
       }
 
       [HttpGet("{id}")]
-      public async Task<ActionResult<IEnumerable<Employee>>> Get(int id, [FromQuery] bool department)
+      [ProducesResponseType((int)HttpStatusCode.OK)]
+      [ProducesResponseType((int)HttpStatusCode.NotFound)]
+      public async Task<ActionResult<IEnumerable<Employee>>> Get(int id)
       {
          _logger.LogInformation("Getting list of employee by ID: {id}", id);
          var result = await _employeeRepository.GetEmployeeAsync(id);
@@ -45,6 +50,8 @@ namespace EmployeeRecordBook.Api.Controllers
 
 
       [HttpPost]
+      [ProducesResponseType((int)HttpStatusCode.Created)]
+      [ProducesResponseType((int)HttpStatusCode.BadRequest)]
       public async Task<ActionResult<Employee>> Post([FromBody] EmployeeVm employeeVm)
       {
          var employee = _mapper.Map<Employee>(employeeVm);
@@ -53,6 +60,9 @@ namespace EmployeeRecordBook.Api.Controllers
       }
 
       [HttpPut("{id}")]
+      [ProducesResponseType((int)HttpStatusCode.NoContent)]
+      [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+      [ProducesResponseType((int)HttpStatusCode.NotFound)]
       public async Task<ActionResult> Put(int id, [FromBody] EmployeeVm employeeVm)
       {
          if (id <= 0 || id != employeeVm.Id)
@@ -60,15 +70,21 @@ namespace EmployeeRecordBook.Api.Controllers
             return BadRequest();
          }
          var employee = _mapper.Map<Employee>(employeeVm);
-         await _employeeRepository.UpdateAsync(id, employee);
+         var result = await _employeeRepository.UpdateAsync(id, employee);
+         if (!result)
+            return NotFound();
          return NoContent();
       }
 
 
       [HttpDelete("{id}")]
+      [ProducesResponseType((int)HttpStatusCode.NoContent)]
+      [ProducesResponseType((int)HttpStatusCode.NotFound)]
       public async Task<ActionResult> Delete(int id)
       {
-         await _employeeRepository.DeleteAsync(id);
+         var result = await _employeeRepository.DeleteAsync(id);
+         if (!result)
+            return NotFound();
          return NoContent();
       }
    }

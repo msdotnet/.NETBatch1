@@ -36,6 +36,8 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
       public async Task<bool> UpdateAsync(int employeeId, Employee employee)
       {
          var employeeToBeUpdated = await GetEmployeeAsync(employeeId);
+         if (employeeToBeUpdated is null)
+            return false;
          //var employeeToBeUpdated = new Employee { Id = employeeId };
          employeeToBeUpdated.Name = employee.Name;
          employeeToBeUpdated.Email = employee.Email;
@@ -49,6 +51,8 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
       public async Task<bool> DeleteAsync(int employeeId)
       {
          var employeeToBeDeleted = await GetEmployeeAsync(employeeId);
+         if(employeeToBeDeleted is null)
+            return false;
          _employeeContext.Employees.Remove(employeeToBeDeleted);
          var result = await _employeeContext.SaveChangesAsync();
          return result > 0;
