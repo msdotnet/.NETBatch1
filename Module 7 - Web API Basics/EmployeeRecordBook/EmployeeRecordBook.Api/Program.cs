@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddEventLog();
 
-builder.Services.RegisterSystemServices();
-builder.Services.RegisterApplicationServices();
+builder.Services.AddSystemServices();
+builder.Services.AddApplicationServices();
 
 
 

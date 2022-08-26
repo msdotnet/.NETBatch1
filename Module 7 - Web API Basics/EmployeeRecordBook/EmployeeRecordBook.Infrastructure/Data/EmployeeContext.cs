@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using EmployeeRecordBook.Core.Entities;
-using EmployeeRecordBook.Infrastructure.EntityConfigurations;
+﻿using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EmployeeRecordBook.Infrastructure.Data
 {

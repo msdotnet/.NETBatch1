@@ -1,11 +1,6 @@
 ﻿using EmployeeRecordBook.Core.Contracts.Infrastructure;
 using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
 {

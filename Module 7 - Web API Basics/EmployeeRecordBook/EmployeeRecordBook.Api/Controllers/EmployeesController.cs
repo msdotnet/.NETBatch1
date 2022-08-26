@@ -66,9 +66,10 @@ namespace EmployeeRecordBook.Api.Controllers
 
 
       [HttpDelete("{id}")]
-      public async Task Delete(int id)
+      public async Task<ActionResult> Delete(int id)
       {
          await _employeeRepository.DeleteAsync(id);
+         return NoContent();
       }
    }
 }

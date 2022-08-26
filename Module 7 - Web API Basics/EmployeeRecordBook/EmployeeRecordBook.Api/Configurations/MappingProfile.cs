@@ -4,9 +4,9 @@ using EmployeeRecordBook.ViewModels;
 
 namespace EmployeeRecordBook.Api.Configurations
 {
-   public class AutoMapperProfile : Profile
+   public class MappingProfile : Profile
    {
-      public AutoMapperProfile()
+      public MappingProfile()
       {
          CreateMap<EmployeeVm, Employee>();
       }
