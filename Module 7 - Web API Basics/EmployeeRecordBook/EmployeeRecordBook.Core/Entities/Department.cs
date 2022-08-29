@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EmployeeRecordBook.Core.Entities
+﻿namespace EmployeeRecordBook.Core.Entities
 {
     public partial class Department
     {

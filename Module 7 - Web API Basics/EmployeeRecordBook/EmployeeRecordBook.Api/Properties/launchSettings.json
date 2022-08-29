@@ -9,16 +9,16 @@
     }
   },
   "profiles": {
-    "EmployeeRecordBook.Api": {
+   "EmployeeRecordBook.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7278;http://localhost:5278",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
+   },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
