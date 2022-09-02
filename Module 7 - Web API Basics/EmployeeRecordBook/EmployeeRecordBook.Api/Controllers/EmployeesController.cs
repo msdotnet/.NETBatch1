@@ -79,7 +79,7 @@ namespace EmployeeRecordBook.Api.Controllers
 
       // DELETE employees/{id}
       [HttpDelete("{id}")]
-      [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Remove))]
+      [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
       public async Task<ActionResult> RemoveEmployee(int id)
       {
          if (id <= 0)

@@ -5,7 +5,7 @@ namespace EmployeeRecordBook.Api.Specs
 {
    public static class CustomApiConventions
    {
-#nullable disable
+      #nullable disable
       #region DELETE
       /// <summary>
       /// Delete convention.
@@ -16,7 +16,7 @@ namespace EmployeeRecordBook.Api.Specs
       [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
       [ProducesDefaultResponseType]
       [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-      public static void Remove(
+      public static void Delete(
           [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Suffix)]
            [ApiConventionTypeMatch(ApiConventionTypeMatchBehavior.Any)]
             object id)
