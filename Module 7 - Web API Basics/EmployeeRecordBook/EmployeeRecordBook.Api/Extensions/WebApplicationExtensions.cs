@@ -1,4 +1,6 @@
-﻿namespace EmployeeRecordBook.Api.Extensions
+﻿using Serilog;
+
+namespace EmployeeRecordBook.Api.Extensions
 {
    public static class WebApplicationExtensions
    {
@@ -10,8 +12,10 @@
             app.UseSwagger();
             app.UseSwaggerUI();
          }
-
+         app.UseResponseCompression();
          app.UseHttpsRedirection();
+
+         app.UseSerilogRequestLogging();
 
          app.UseAuthorization();
 

@@ -51,7 +51,7 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
       public async Task<bool> DeleteAsync(int employeeId)
       {
          var employeeToBeDeleted = await GetEmployeeAsync(employeeId);
-         if(employeeToBeDeleted is null)
+         if (employeeToBeDeleted is null)
             return false;
          _employeeContext.Employees.Remove(employeeToBeDeleted);
          var result = await _employeeContext.SaveChangesAsync();
