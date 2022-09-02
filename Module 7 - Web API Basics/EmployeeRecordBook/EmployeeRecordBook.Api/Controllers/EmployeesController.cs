@@ -1,44 +1,46 @@
 ﻿using AutoMapper;
+using EmployeeRecordBook.Api.Specs;
+using EmployeeRecordBook.Core.AppSettings;
 using EmployeeRecordBook.Core.Dtos;
 using EmployeeRecordBook.Core.Entities;
 using EmployeeRecordBook.Core.Infrastructure.Repositories;
 using EmployeeRecordBook.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Microsoft.Extensions.Options;
+
 
 namespace EmployeeRecordBook.Api.Controllers
 {
-   [Route("[controller]")]
-   [ApiController]
-   public class EmployeesController : ControllerBase
+   [ApiConventionType(typeof(DefaultApiConventions))]
+   public class EmployeesController : ApiControllerBase
    {
       private readonly IEmployeeRepository _employeeRepository;
       private readonly ILogger<EmployeesController> _logger;
       private readonly IMapper _mapper;
+      private readonly CommonOptions _options;
 
-      public EmployeesController(IEmployeeRepository employeeRepository, ILogger<EmployeesController> logger, IMapper mapper)
+      public EmployeesController(IEmployeeRepository employeeRepository, ILogger<EmployeesController> logger, IMapper mapper, IOptions<CommonOptions> options)
       {
          _employeeRepository = employeeRepository;
          _logger = logger;
          _mapper = mapper;
+         _options = options.Value;
       }
-
-
+      // GET employees
       [HttpGet]
-      [ProducesResponseType((int)HttpStatusCode.OK)]
-      [ProducesResponseType((int)HttpStatusCode.NotFound)]
+      [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
       public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
       {
+
          _logger.LogInformation("Getting list of all employees");
          var result = await _employeeRepository.GetEmployeesAsync();
          if (!result.Any())
             return NotFound();
          return Ok(result);
       }
-
+      // GET employees/{id}
       [HttpGet("{id}")]
-      [ProducesResponseType((int)HttpStatusCode.OK)]
-      [ProducesResponseType((int)HttpStatusCode.NotFound)]
+      [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
       public async Task<ActionResult<IEnumerable<Employee>>> Get(int id)
       {
          _logger.LogInformation("Getting list of employee by ID: {id}", id);
@@ -48,10 +50,9 @@ namespace EmployeeRecordBook.Api.Controllers
          return Ok(result);
       }
 
-
+      // POST employees
       [HttpPost]
-      [ProducesResponseType((int)HttpStatusCode.Created)]
-      [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+      [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
       public async Task<ActionResult<Employee>> Post([FromBody] EmployeeVm employeeVm)
       {
          var employee = _mapper.Map<Employee>(employeeVm);
@@ -59,14 +60,14 @@ namespace EmployeeRecordBook.Api.Controllers
          return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
       }
 
+      // PUT employees/{id}
       [HttpPut("{id}")]
-      [ProducesResponseType((int)HttpStatusCode.NoContent)]
-      [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-      [ProducesResponseType((int)HttpStatusCode.NotFound)]
+      [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
       public async Task<ActionResult> Put(int id, [FromBody] EmployeeVm employeeVm)
       {
          if (id <= 0 || id != employeeVm.Id)
          {
+            _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
             return BadRequest();
          }
          var employee = _mapper.Map<Employee>(employeeVm);
@@ -76,12 +77,16 @@ namespace EmployeeRecordBook.Api.Controllers
          return NoContent();
       }
 
-
+      // DELETE employees/{id}
       [HttpDelete("{id}")]
-      [ProducesResponseType((int)HttpStatusCode.NoContent)]
-      [ProducesResponseType((int)HttpStatusCode.NotFound)]
-      public async Task<ActionResult> Delete(int id)
+      [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Remove))]
+      public async Task<ActionResult> RemoveEmployee(int id)
       {
+         if (id <= 0)
+         {
+            _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be {id}", id);
+            return BadRequest();
+         }
          var result = await _employeeRepository.DeleteAsync(id);
          if (!result)
             return NotFound();
