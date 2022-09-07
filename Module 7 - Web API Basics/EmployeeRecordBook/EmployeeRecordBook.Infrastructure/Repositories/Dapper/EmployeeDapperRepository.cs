@@ -13,10 +13,12 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.Dapper
       {
          _dbConnection = dbConnection;
       }
-      public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
+      public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string? name = null)
       {
-         var query = "SELECT [e].[Id], [e].[Name], [e].[Salary], [d].[Name] AS [DepartmentName] FROM[Employee] AS[e] INNER JOIN[Department] AS[d] ON[e].[DepartmentId] = [d].[Id]";
-         return await _dbConnection.QueryAsync<EmployeeDto>(query);
+         var query = "SELECT [e].[Id], [e].[Name], [e].[Salary], [d].[Name] AS [DepartmentName]" +
+            " FROM [Employee] AS[e] INNER JOIN [Department] AS[d] ON[e].[DepartmentId] = [d].[Id]" +
+            " Where @name is Null OR [e].[Name] like CONCAT('%',@name,'%')";
+         return await _dbConnection.QueryAsync<EmployeeDto>(query, new { name });
       }
       public async Task<Employee> GetEmployeeAsync(int employeeId)
       {

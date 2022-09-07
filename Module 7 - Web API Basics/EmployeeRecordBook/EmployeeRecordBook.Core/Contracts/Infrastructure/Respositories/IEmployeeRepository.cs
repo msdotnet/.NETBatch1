@@ -8,7 +8,7 @@ namespace EmployeeRecordBook.Core.Infrastructure.Repositories
       Task<Employee> CreateAsync(Employee employee);
       Task<bool> DeleteAsync(int employeeId);
       Task<Employee> GetEmployeeAsync(int employeeId);
-      Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
+      Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string? name = null);
       Task<bool> UpdateAsync(int employeeId, Employee employee);
    }
 }

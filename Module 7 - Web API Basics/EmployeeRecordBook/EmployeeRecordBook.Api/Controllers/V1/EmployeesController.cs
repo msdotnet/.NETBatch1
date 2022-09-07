@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 
 namespace EmployeeRecordBook.Api.Controllers
 {
+   [ApiVersion("1.0")]
+   [ApiVersion("1.1")]
    [ApiConventionType(typeof(DefaultApiConventions))]
    public class EmployeesController : ApiControllerBase
    {
@@ -27,6 +29,7 @@ namespace EmployeeRecordBook.Api.Controllers
          _options = options.Value;
       }
       // GET employees
+      [MapToApiVersion("1.0")]
       [HttpGet]
       [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
       public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
@@ -38,7 +41,17 @@ namespace EmployeeRecordBook.Api.Controllers
             return NotFound();
          return Ok(result);
       }
+      // GET employees
+      [MapToApiVersion("1.1")]
+      [HttpGet]
+      [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+      public ActionResult<string> GetDataFromNewVersion()
+      {
+         _logger.LogInformation("Getting sample text from version 2 API");
+         return Ok("Sample Text from V1.1 API");
+      }
       // GET employees/{id}
+      [MapToApiVersion("1.0")]
       [HttpGet("{id}")]
       [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
       public async Task<ActionResult<IEnumerable<Employee>>> Get(int id)
@@ -51,6 +64,7 @@ namespace EmployeeRecordBook.Api.Controllers
       }
 
       // POST employees
+      [MapToApiVersion("1.0")]
       [HttpPost]
       [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
       public async Task<ActionResult<Employee>> Post([FromBody] EmployeeVm employeeVm)
@@ -61,6 +75,7 @@ namespace EmployeeRecordBook.Api.Controllers
       }
 
       // PUT employees/{id}
+      [MapToApiVersion("1.0")]
       [HttpPut("{id}")]
       [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
       public async Task<ActionResult> Put(int id, [FromBody] EmployeeVm employeeVm)
@@ -78,6 +93,7 @@ namespace EmployeeRecordBook.Api.Controllers
       }
 
       // DELETE employees/{id}
+      [MapToApiVersion("1.0")]
       [HttpDelete("{id}")]
       [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
       public async Task<ActionResult> RemoveEmployee(int id)

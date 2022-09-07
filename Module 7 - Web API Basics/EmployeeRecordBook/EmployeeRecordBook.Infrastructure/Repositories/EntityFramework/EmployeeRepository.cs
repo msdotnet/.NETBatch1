@@ -19,9 +19,10 @@ namespace EmployeeRecordBook.Infrastructure.Repositories.EntityFramework
          await _employeeContext.SaveChangesAsync();
          return employee;
       }
-      public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
+      public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string? name = null)
       {
          var employeeQuery = (from employee in _employeeContext.Employees.Include(e => e.Department)
+                              where string.IsNullOrEmpty(name) || employee.Name.Contains(name)
                               select new EmployeeDto
                               {
                                  Id = employee.Id,
